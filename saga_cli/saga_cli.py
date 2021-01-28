@@ -26,7 +26,36 @@ def get_choice():
         print("["+str(topic)+"]: "+topics[topic]['topic'])
     selection = input()
 
+    valid = isValidChoiceIndex(selection, topics)
+
+    # Use the following for repeated code
+
+    '''
+    while not valid:
+        print_section_break()
+        print("Select valid choice number")
+        for topic in range(0, len(topics)):
+            print("["+str(topic)+"]: "+topics[topic]['topic'])
+        selection = input()
+        valid = isValidChoiceIndex(selection, topics)
+    '''
+
+    # use the following for instant exit
+    if not valid:
+        print("Topic choice number not valid. Exiting....")
+        exit(0)
+
     return topics[int(selection)]['topic']
+
+
+def isValidChoiceIndex(selection, topics):
+    valid_range = len(topics)
+    if not selection.isnumeric():
+        return False
+    elif int(selection) < 0 or int(selection) >= valid_range:
+        return False
+    else:
+        return True
 
 def get_free_time():
     print("How much free time: ")
@@ -48,13 +77,11 @@ def recommend(topic_choice, free_time):
     print("(Y/N):")
     selection = input()
     
-    #Maybe do Y, N or other here
-    
     if selection.upper() == "Y":
         webbrowser.open(url,new=2)
     else:
         print_section_break()
-        recommend(topic_choice)
+        recommend(topic_choice, free_time)
 
 def main():
     # Process arguments
@@ -69,15 +96,21 @@ def main():
 
     if args.next:
         if not args.topic:
+            print_section_break()
             topic_choice = get_choice()
         else:
             topic_choice = args.topic
         if not args.free_time:
+            print_section_break()
             free_time = get_free_time()
         else:
             free_time = args.free_time
 
         #Validate free time int here
+
+        if not free_time.isnumeric():
+            print("ERROR: --free-time was not an integer. Exiting....")
+            exit(0)
         
         print_section_break()
         recommend(topic_choice, free_time)
